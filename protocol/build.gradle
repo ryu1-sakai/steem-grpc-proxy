@@ -3,11 +3,19 @@ apply plugin: 'com.google.protobuf'
 
 buildscript {
     repositories {
-        maven {
-            url "https://maven-central.storage-download.googleapis.com/repos/central/data/"
-        }
+        mavenCentral()
     }
     dependencies {
-        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.5'
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.7'
     }
+}
+
+protobuf {
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.6.1'
+    }
+}
+
+dependencies {
+    compile 'com.google.protobuf:protobuf-java:3.6.1'
 }
