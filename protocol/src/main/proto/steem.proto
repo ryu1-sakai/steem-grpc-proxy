@@ -6,8 +6,8 @@ option java_outer_classname = "SteemProto";
 
 package steem;
 
-service Steem {
-    rpc Login (LoginRequest) returns (LoginResponse) {}
+service SteemService {
+    rpc Login (LoginRequest) returns (LoginResponse);
 }
 
 message LoginRequest {
