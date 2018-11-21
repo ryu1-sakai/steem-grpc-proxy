@@ -1,1 +1,14 @@
 apply plugin: 'java'
+apply plugin: 'idea'
+
+dependencies {
+    compile project(":protocol")
+
+    compile 'com.linecorp.armeria:armeria:0.75.0'
+    compile 'com.linecorp.armeria:armeria-grpc:0.75.0'
+}
+
+tasks.withType(JavaCompile) {
+    sourceCompatibility '1.8'
+    targetCompatibility '1.8'
+}
