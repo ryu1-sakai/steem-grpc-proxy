@@ -2,6 +2,7 @@ package io.steem.grpcproxy;
 
 import com.linecorp.armeria.common.HttpRequest;
 import com.linecorp.armeria.common.HttpResponse;
+import com.linecorp.armeria.common.grpc.GrpcSerializationFormats;
 import com.linecorp.armeria.server.Server;
 import com.linecorp.armeria.server.ServerBuilder;
 import com.linecorp.armeria.server.ServiceWithPathMappings;
@@ -13,6 +14,7 @@ public class SteemProxyServer {
         ServiceWithPathMappings<HttpRequest, HttpResponse> service
                 = new GrpcServiceBuilder()
                 .addService(new SteemProxyService())
+                .supportedSerializationFormats(GrpcSerializationFormats.PROTO, GrpcSerializationFormats.JSON)
                 .enableUnframedRequests(true)
                 .build();
         Server server = new ServerBuilder().http(80).service(service).build();
