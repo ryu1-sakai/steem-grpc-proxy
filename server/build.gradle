@@ -6,6 +6,7 @@ dependencies {
 
     compile 'com.linecorp.armeria:armeria:0.76.0'
     compile 'com.linecorp.armeria:armeria-grpc:0.76.0'
+    compile 'eu.bittrade.libs:steemj-core:0.4.3'
 }
 
 tasks.withType(JavaCompile) {
