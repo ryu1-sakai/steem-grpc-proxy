@@ -7,8 +7,12 @@ import io.grpc.stub.StreamObserver;
 import io.steem.grpc.LoginRequest;
 import io.steem.grpc.LoginResponse;
 import io.steem.grpc.SteemServiceGrpc;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SteemProxyService extends SteemServiceGrpc.SteemServiceImplBase {
+
+    private static final Logger logger = LoggerFactory.getLogger(SteemProxyService.class);
 
     private final CommunicationHandler communicationHandler;
 
@@ -25,6 +29,7 @@ public class SteemProxyService extends SteemServiceGrpc.SteemServiceImplBase {
             responseObserver.onNext(LoginResponse.newBuilder().setSucceeded(succeeded).build());
             responseObserver.onCompleted();
         } catch (Exception e) {
+            logger.warn("Failed to call Login API", e);
             responseObserver.onError(e);
         }
     }
