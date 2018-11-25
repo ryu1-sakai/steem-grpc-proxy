@@ -1,12 +1,16 @@
 apply plugin: 'java'
 apply plugin: 'idea'
 
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
 dependencies {
     compile project(":protocol")
 
     compile 'com.linecorp.armeria:armeria:0.76.0'
     compile 'com.linecorp.armeria:armeria-grpc:0.76.0'
-    compile 'eu.bittrade.libs:steemj-core:0.4.3'
+    compile 'com.github.marvin-we.steem-java-api-wrapper:steemj-core:20181010'
     compile 'org.slf4j:slf4j-simple:1.7.25'
 }
 
