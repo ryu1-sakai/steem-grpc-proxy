@@ -7,6 +7,7 @@ package steem;
 
 service SteemService {
     rpc Login (LoginRequest) returns (LoginResponse);
+    rpc GetRecentTrades (GetRecentTradesRequest) returns (GetRecentTradesResponse);
 }
 
 message LoginRequest {
@@ -16,4 +17,35 @@ message LoginRequest {
 
 message LoginResponse {
     bool succeeded = 1;
+}
+
+message GetRecentTradesRequest {
+    uint32 limit = 1;
+}
+
+message GetRecentTradesResponse {
+    repeated MarketTrade market_trades = 1;
+}
+
+message MarketTrade {
+    uint64 timestamp = 1;
+    Asset current_pays = 2;
+    Asset open_pays = 3;
+}
+
+message Asset {
+    uint64 ammount = 1;
+    AssetSymbol symbol = 2;
+    uint32 precision = 3;
+}
+
+enum AssetSymbol {
+    UNKNOWN = 0;
+    VESTS = 1;
+    STEEM = 2;
+    SBD = 3;
+    STMD = 4;
+    TESTS = 5;
+    TBD = 6;
+    TSTD = 7;
 }
