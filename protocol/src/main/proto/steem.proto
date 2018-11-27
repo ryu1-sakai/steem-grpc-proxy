@@ -20,7 +20,7 @@ message LoginResponse {
 }
 
 message GetRecentTradesRequest {
-    uint32 limit = 1;
+    int32 limit = 1;
 }
 
 message GetRecentTradesResponse {
@@ -28,15 +28,15 @@ message GetRecentTradesResponse {
 }
 
 message MarketTrade {
-    uint64 timestamp = 1;
+    int64 timestamp = 1;
     Asset current_pays = 2;
     Asset open_pays = 3;
 }
 
 message Asset {
-    uint64 ammount = 1;
+    int64 ammount = 1;
     AssetSymbol symbol = 2;
-    uint32 precision = 3;
+    int32 precision = 3;
 }
 
 enum AssetSymbol {
