@@ -20,7 +20,7 @@ public class SteemProxyServer {
     public static CommunicationHandler createCommunicationHandler() {
         try {
             // TODO: Refactor SteemJ's CommunicationHandler to accept configuration
-            URI testNetUrl = URI.create("https://testnet.steemitdev.com");
+            URI testNetUrl = URI.create("https://api.steemit.com");
             List<Pair<URI, Boolean>> endpoints = ImmutableList.of(Pair.of(testNetUrl, false));
             SteemJConfig.getInstance().setEndpointURIs(endpoints);
             return new CommunicationHandler();
