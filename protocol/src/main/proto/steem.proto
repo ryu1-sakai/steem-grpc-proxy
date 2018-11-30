@@ -6,8 +6,9 @@ option java_package = "io.steem.grpc";
 package steem;
 
 service SteemService {
-    rpc Login (LoginRequest) returns (LoginResponse);
     rpc GetRecentTrades (GetRecentTradesRequest) returns (GetRecentTradesResponse);
+    rpc JsonRpc (JsonRpcRequest) returns (JsonRpcResponse);
+    rpc Login (LoginRequest) returns (LoginResponse);
 }
 
 message LoginRequest {
@@ -25,6 +26,13 @@ message GetRecentTradesRequest {
 
 message GetRecentTradesResponse {
     repeated MarketTrade market_trades = 1;
+}
+
+message JsonRpcRequest {
+}
+
+message JsonRpcResponse {
+    repeated string results = 1;
 }
 
 message MarketTrade {
