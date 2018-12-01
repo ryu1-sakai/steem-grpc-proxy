@@ -1,0 +1,12 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+
+dependencies {
+    compile 'com.linecorp.armeria:armeria:0.76.0'
+    compile 'org.slf4j:slf4j-simple:1.7.25'
+}
+
+tasks.withType(JavaCompile) {
+    sourceCompatibility '1.8'
+    targetCompatibility '1.8'
+}
