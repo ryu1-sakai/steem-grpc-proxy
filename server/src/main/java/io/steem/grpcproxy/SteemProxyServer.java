@@ -17,29 +17,30 @@ import java.util.List;
 
 public class SteemProxyServer {
 
-    public static CommunicationHandler createCommunicationHandler() {
-        try {
-            // TODO: Refactor SteemJ's CommunicationHandler to accept configuration
-            URI testNetUrl = URI.create("https://api.steemit.com");
-            List<Pair<URI, Boolean>> endpoints = ImmutableList.of(Pair.of(testNetUrl, false));
-            SteemJConfig.getInstance().setEndpointURIs(endpoints);
-            return new CommunicationHandler();
-        } catch (Exception e) {
-            throw new RuntimeException(e); // TODO: Error handling
-        }
+  public static CommunicationHandler createCommunicationHandler() {
+    try {
+      // TODO: Refactor SteemJ's CommunicationHandler to accept configuration
+      URI testNetUrl = URI.create("https://api.steemit.com");
+      List<Pair<URI, Boolean>> endpoints = ImmutableList.of(Pair.of(testNetUrl, false));
+      SteemJConfig.getInstance().setEndpointURIs(endpoints);
+      return new CommunicationHandler();
+    } catch (Exception e) {
+      throw new RuntimeException(e); // TODO: Error handling
     }
+  }
 
-    public static Server create() {
-        ServiceWithPathMappings<HttpRequest, HttpResponse> service
-                = new GrpcServiceBuilder()
-                .addService(new SteemProxyService(createCommunicationHandler()))
-                .supportedSerializationFormats(GrpcSerializationFormats.PROTO, GrpcSerializationFormats.JSON)
-                .enableUnframedRequests(true)
-                .build();
-        return new ServerBuilder().http(80).service(service).build();
-    }
+  public static Server create() {
+    ServiceWithPathMappings<HttpRequest, HttpResponse> service =
+        new GrpcServiceBuilder()
+            .addService(new SteemProxyService(createCommunicationHandler()))
+            .supportedSerializationFormats(
+                GrpcSerializationFormats.PROTO, GrpcSerializationFormats.JSON)
+            .enableUnframedRequests(true)
+            .build();
+    return new ServerBuilder().http(80).service(service).build();
+  }
 
-    public static void main(String[] args) {
-        create().start().join();
-    }
+  public static void main(String[] args) {
+    create().start().join();
+  }
 }
