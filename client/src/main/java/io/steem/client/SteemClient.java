@@ -5,6 +5,8 @@ import com.linecorp.armeria.common.AggregatedHttpMessage;
 import com.linecorp.armeria.common.HttpMethod;
 import com.linecorp.armeria.common.HttpStatus;
 import com.linecorp.armeria.common.MediaType;
+import io.steem.client.model.GetMethodsRequest;
+import io.steem.client.model.SteemApiRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,19 +28,19 @@ public class SteemClient {
 
   public static void main(String[] args) throws Exception {
     SteemClient client = SteemClient.of(new URI("https://testnet.steemitdev.com"));
-    String request = "{\"jsonrpc\":\"2.0\", \"method\":\"jsonrpc.get_methods\", \"id\":1}";
+    SteemApiRequest request = GetMethodsRequest.create();
     System.out.println(client.call(request));
   }
 
-  public String call(String request) {
+  public String call(SteemApiRequest request) {
     AggregatedHttpMessage httpRequest =
-        AggregatedHttpMessage.of(HttpMethod.POST, "/", MediaType.JSON_UTF_8, request);
-    AggregatedHttpMessage response = httpClient.execute(httpRequest).aggregate().join();
+        AggregatedHttpMessage.of(HttpMethod.POST, "/", MediaType.JSON_UTF_8, request.toAppbase());
+    AggregatedHttpMessage response = call(httpRequest);
     if (response.status() != HttpStatus.OK) {
       String errorMessage =
           String.format("Error in calling Steem API: request<%s> response<%s>", request, response);
       logger.warn(errorMessage);
-      throw new RuntimeException(errorMessage);
+      throw new SteemClientException(errorMessage);
     }
     return response.content().toStringUtf8();
   }
