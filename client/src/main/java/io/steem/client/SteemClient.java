@@ -6,11 +6,15 @@ import com.linecorp.armeria.common.HttpMethod;
 import com.linecorp.armeria.common.HttpStatus;
 import com.linecorp.armeria.common.MediaType;
 import io.steem.client.model.GetMethodsRequest;
+import io.steem.client.model.GetMethodsResponseParser;
 import io.steem.client.model.SteemApiRequest;
+import io.steem.client.model.SteemApiResponseParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URI;
+import java.util.List;
+import java.util.Optional;
 
 public class SteemClient {
 
@@ -28,11 +32,13 @@ public class SteemClient {
 
   public static void main(String[] args) throws Exception {
     SteemClient client = SteemClient.of(new URI("https://testnet.steemitdev.com"));
-    SteemApiRequest request = GetMethodsRequest.create();
-    System.out.println(client.call(request));
+    GetMethodsRequest request = GetMethodsRequest.create();
+    GetMethodsResponseParser parser = GetMethodsResponseParser.create();
+    Optional<List<String>> maybeMethods = client.call(request, parser);
+    System.out.println(maybeMethods);
   }
 
-  public String call(SteemApiRequest request) {
+  public <T> Optional<T> call(SteemApiRequest request, SteemApiResponseParser<T> parser) {
     AggregatedHttpMessage httpRequest =
         AggregatedHttpMessage.of(HttpMethod.POST, "/", MediaType.JSON_UTF_8, request.toAppbase());
     AggregatedHttpMessage response = call(httpRequest);
@@ -42,7 +48,8 @@ public class SteemClient {
       logger.warn(errorMessage);
       throw new SteemClientException(errorMessage);
     }
-    return response.content().toStringUtf8();
+    String content = response.content().toStringUtf8();
+    return parser.parseAppbaseResponse(content);
   }
 
   private AggregatedHttpMessage call(AggregatedHttpMessage httpRequest) {
