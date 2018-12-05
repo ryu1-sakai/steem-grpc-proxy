@@ -2,10 +2,12 @@ package io.steem.client.model;
 
 import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.google.common.collect.ImmutableList;
 import io.steem.client.SteemClientException;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class GetMethodsResponseParser extends SteemApiResponseParser<List<String>> {
 
@@ -16,18 +18,25 @@ public class GetMethodsResponseParser extends SteemApiResponseParser<List<String
   }
 
   @Override
-  public List<String> parseCondenserResult(String result) {
+  public List<String> parseCondenserResult(Object result) {
     throw new SteemClientException("Condenser API unavailable");
   }
 
   @Override
-  public List<String> parseAppbaseResult(String result) {
-    try {
-      TypeFactory typeFactory = OBJECT_MAPPER.getTypeFactory();
-      CollectionType listType = typeFactory.constructCollectionType(List.class, String.class);
-      return OBJECT_MAPPER.readValue(result, listType);
-    } catch (IOException e) {
-      throw new SteemClientException("Error in parsing JSON: " + result, e);
+  public List<String> parseAppbaseResult(Object result) {
+    if (!(result instanceof List)) {
+      throw new SteemClientException(
+          String.format("result must be List but is %s <%s>", result.getClass(), result));
     }
+    List<?> resultItems = (List<?>) result;
+    //noinspection UnstableApiUsage
+    return resultItems.stream().map(item -> {
+      if (!(item instanceof String)) {
+        throw new SteemClientException(
+            String.format("result must consist of String items but contains %s <%s> :result<%s>",
+                item.getClass(), item, result));
+      }
+      return (String) item;
+    }).collect(ImmutableList.toImmutableList());
   }
 }
