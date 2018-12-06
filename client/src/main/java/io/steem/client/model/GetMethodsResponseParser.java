@@ -1,13 +1,9 @@
 package io.steem.client.model;
 
-import com.fasterxml.jackson.databind.type.CollectionType;
-import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.google.common.collect.ImmutableList;
 import io.steem.client.SteemClientException;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class GetMethodsResponseParser extends SteemApiResponseParser<List<String>> {
 

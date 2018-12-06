@@ -12,12 +12,17 @@ import java.util.concurrent.atomic.AtomicLong;
 public abstract class SteemApiRequest {
 
   private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-  private static final AtomicLong REQUEST_ID = new AtomicLong();
   private static final String JSON_RPC = "2.0";
 
-  protected abstract boolean isCondenserAvailable();
+  private final long requestId;
 
-  protected abstract boolean isAppbaseAvailable();
+  protected SteemApiRequest(long requestId) {
+    this.requestId = requestId;
+  }
+
+  public abstract boolean isCondenserAvailable();
+
+  public abstract boolean isAppbaseAvailable();
 
   protected abstract String getCondenserMethod();
 
@@ -29,15 +34,12 @@ public abstract class SteemApiRequest {
 
   public String toCondenser() {
     Map<String, Object> objectMap =
-        ImmutableMap.of(
-            "jsonrpc",
-            JSON_RPC,
-            "method",
-            getCondenserMethod(),
-            "params",
-            getCondenserParams(),
-            "id",
-            REQUEST_ID.incrementAndGet());
+        ImmutableMap.<String, Object>builder()
+            .put("jsonrpc", JSON_RPC)
+            .put("method", getCondenserMethod())
+            .put("params", getCondenserParams())
+            .put("id", requestId)
+            .build();
     try {
       return OBJECT_MAPPER.writeValueAsString(objectMap);
     } catch (JsonProcessingException e) {
@@ -50,7 +52,7 @@ public abstract class SteemApiRequest {
         ImmutableMap.<String, Object>builder()
             .put("jsonrpc", JSON_RPC)
             .put("method", getAppbaseMethod())
-            .put("id", REQUEST_ID.incrementAndGet());
+            .put("id", requestId);
     Map<String, Object> params = getAppbaseParams();
     if (!params.isEmpty()) {
       builder.put("params", params);

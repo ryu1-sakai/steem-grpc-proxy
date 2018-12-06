@@ -8,19 +8,21 @@ import java.util.Map;
 
 public class GetMethodsRequest extends SteemApiRequest {
 
-  private GetMethodsRequest() {}
+  private GetMethodsRequest(long requestId) {
+    super(requestId);
+  }
 
-  public static GetMethodsRequest create() {
-    return new GetMethodsRequest();
+  public static GetMethodsRequest create(long requestId) {
+    return new GetMethodsRequest(requestId);
   }
 
   @Override
-  protected boolean isCondenserAvailable() {
+  public boolean isCondenserAvailable() {
     return false;
   }
 
   @Override
-  protected boolean isAppbaseAvailable() {
+  public boolean isAppbaseAvailable() {
     return true;
   }
 

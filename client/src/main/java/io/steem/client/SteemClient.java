@@ -9,6 +9,7 @@ import io.steem.client.model.GetMethodsRequest;
 import io.steem.client.model.GetMethodsResponseParser;
 import io.steem.client.model.SteemApiRequest;
 import io.steem.client.model.SteemApiResponseParser;
+import org.apache.commons.lang3.RandomUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +33,7 @@ public class SteemClient {
 
   public static void main(String[] args) throws Exception {
     SteemClient client = SteemClient.of(new URI("https://testnet.steemitdev.com"));
-    GetMethodsRequest request = GetMethodsRequest.create();
+    GetMethodsRequest request = GetMethodsRequest.create(RandomUtils.nextLong());
     GetMethodsResponseParser parser = GetMethodsResponseParser.create();
     Optional<List<String>> maybeMethods = client.call(request, parser);
     System.out.println(maybeMethods);
