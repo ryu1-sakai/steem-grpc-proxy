@@ -22,53 +22,6 @@ public class SteemApiRequestTest {
   private static final MapType MAP_TYPE = OBJECT_MAPPER.getTypeFactory()
       .constructMapType(HashMap.class, String.class, Object.class);
 
-  private static class SteemApiRequestMock extends SteemApiRequest {
-
-    private final String condenserMethod;
-    private final String appbaseMethod;
-    private final List<Object> condenserParams;
-    private final Map<String, Object> appbaseParams;
-
-    public SteemApiRequestMock(long requestId, String condenserMethod, String appbaseMethod,
-                               List<Object> condenserParams, Map<String, Object> appbaseParams) {
-      super(requestId);
-      this.condenserMethod = condenserMethod;
-      this.appbaseMethod = appbaseMethod;
-      this.condenserParams = condenserParams;
-      this.appbaseParams = appbaseParams;
-    }
-
-    @Override
-    public boolean isCondenserAvailable() {
-      return true;
-    }
-
-    @Override
-    public boolean isAppbaseAvailable() {
-      return true;
-    }
-
-    @Override
-    protected String getCondenserMethod() {
-      return condenserMethod;
-    }
-
-    @Override
-    protected String getAppbaseMethod() {
-      return appbaseMethod;
-    }
-
-    @Override
-    protected List<Object> getCondenserParams() {
-      return condenserParams;
-    }
-
-    @Override
-    protected Map<String, Object> getAppbaseParams() {
-      return appbaseParams;
-    }
-  }
-
   @Test
   public void toCondenser() throws Exception {
     // set up
@@ -76,7 +29,20 @@ public class SteemApiRequestTest {
     String method = RandomStringUtils.randomAlphabetic(8);
     List<Object> params = Stream.generate(() -> RandomStringUtils.randomAlphabetic(8))
         .limit(8).collect(ImmutableList.toImmutableList());
-    SteemApiRequest sut = new SteemApiRequestMock(requestId, method, null, params, null);
+
+    SteemApiRequest.CondenserComposer condenserComposer = new SteemApiRequest.CondenserComposer() {
+      @Override
+      public String getMethod() {
+        return method;
+      }
+
+      @Override
+      public List<Object> getParams() {
+        return params;
+      }
+    };
+
+    SteemApiRequest sut = new SteemApiRequest(condenserComposer, null, requestId);
 
     // exercise
     String actual = sut.toCondenser();
@@ -103,7 +69,20 @@ public class SteemApiRequestTest {
       return new AbstractMap.SimpleEntry<>(key, value);
     }).limit(8).collect(ImmutableMap.toImmutableMap(AbstractMap.SimpleEntry::getKey,
         AbstractMap.SimpleEntry::getValue));
-    SteemApiRequest sut = new SteemApiRequestMock(requestId, null, method, null, params);
+
+    SteemApiRequest.AppbaseCompser appbaseCompser = new SteemApiRequest.AppbaseCompser() {
+      @Override
+      public String getMethod() {
+        return method;
+      }
+
+      @Override
+      public Map<String, Object> getParams() {
+        return params;
+      }
+    };
+
+    SteemApiRequest sut = new SteemApiRequest(null, appbaseCompser, requestId);
 
     // exercise
     String actual = sut.toAppbase();
