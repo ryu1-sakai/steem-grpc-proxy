@@ -7,19 +7,15 @@ import java.util.List;
 
 public class GetMethodsResponseParser extends SteemApiResponseParser<List<String>> {
 
-  private GetMethodsResponseParser() {}
+  private GetMethodsResponseParser() {
+    super(null, GetMethodsResponseParser::parseAppbaseResult);
+  }
 
   public static GetMethodsResponseParser create() {
     return new GetMethodsResponseParser();
   }
 
-  @Override
-  public List<String> parseCondenserResult(Object result) {
-    throw new SteemClientException("Condenser API unavailable");
-  }
-
-  @Override
-  public List<String> parseAppbaseResult(Object result) {
+  private static List<String> parseAppbaseResult(Object result) {
     if (!(result instanceof List)) {
       throw new SteemClientException(
           String.format("result must be List but is %s <%s>", result.getClass(), result));

@@ -4,23 +4,42 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.MapType;
 import io.steem.client.SteemClientException;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 
-public abstract class SteemApiResponseParser<T> {
+public class SteemApiResponseParser<T> {
 
-  static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+  protected interface ResultParser<T> extends Function<Object, T> {}
+
+  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
+  private final ResultParser<T> condenserResultParser;
+  private final ResultParser<T> appbaseResultParser;
+
+  protected SteemApiResponseParser(@Nullable ResultParser<T> condenserResultParser,
+                                   @Nullable ResultParser<T> appbaseResultParser) {
+    this.condenserResultParser = condenserResultParser;
+    this.appbaseResultParser = appbaseResultParser;
+  }
 
   public Optional<T> parseCondenserResponse(String response) {
+    if (condenserResultParser == null) {
+      throw new SteemClientException("Condenser API unavailable");
+    }
     Map<String, Object> objectMap = toObjectMap(response);
-    return Optional.ofNullable(objectMap.get("result")).map(this::parseCondenserResult);
+    return Optional.ofNullable(objectMap.get("result")).map(condenserResultParser);
   }
 
   public Optional<T> parseAppbaseResponse(String response) {
+    if (appbaseResultParser == null) {
+      throw new SteemClientException("Appbase API unavailable");
+    }
     Map<String, Object> objectMap = toObjectMap(response);
-    return Optional.ofNullable(objectMap.get("result")).map(this::parseAppbaseResult);
+    return Optional.ofNullable(objectMap.get("result")).map(appbaseResultParser);
   }
 
   private static Map<String, Object> toObjectMap(String json) {
@@ -32,8 +51,4 @@ public abstract class SteemApiResponseParser<T> {
       throw new SteemClientException("Error in parsing JSON: " + json, e);
     }
   }
-
-  protected abstract T parseCondenserResult(Object result);
-
-  protected abstract T parseAppbaseResult(Object result);
 }
