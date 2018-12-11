@@ -35,14 +35,6 @@ public class SteemApiRequest {
     this.requestId = requestId;
   }
 
-  public boolean isCondenserAvailable() {
-    return condenserComposer != null;
-  }
-
-  public boolean isAppbaseAvailable() {
-    return appbaseComposer != null;
-  }
-
   public String toCondenser() {
     if (condenserComposer == null) {
       throw new SteemClientException("Condenser API unavailable");
