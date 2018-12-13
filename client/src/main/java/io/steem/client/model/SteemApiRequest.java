@@ -6,47 +6,37 @@ import com.google.common.collect.ImmutableMap;
 import io.steem.client.SteemClientException;
 
 import javax.annotation.Nullable;
-import java.util.List;
 import java.util.Map;
 
 public class SteemApiRequest {
 
-  protected interface Composer<T> {
-    String getMethod();
-    T getParams();
-  }
-
-  protected interface CondenserComposer extends Composer<List<Object>> {}
-
-  protected interface AppbaseCompser extends Composer <Map<String, Object>> {}
-
   private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
   private static final String JSON_RPC = "2.0";
 
-  private final Composer<List<Object>> condenserComposer;
-  private final Composer<Map<String, Object>> appbaseComposer;
+  private final String condenserMeghod;
+  private final String appbaseMethod;
+  private final SteemApiRequestParams params;
   private final long requestId;
 
-  protected SteemApiRequest(@Nullable CondenserComposer condenserComposer,
-                            @Nullable AppbaseCompser appbaseComposer,
-                            long requestId) {
-    this.condenserComposer = condenserComposer;
-    this.appbaseComposer = appbaseComposer;
+  protected SteemApiRequest(@Nullable String condenserMethod, @Nullable String appbaseMethod,
+                            SteemApiRequestParams params, long requestId) {
+    this.condenserMeghod = condenserMethod;
+    this.appbaseMethod = appbaseMethod;
+    this.params = params;
     this.requestId = requestId;
   }
 
   public String toCondenser() {
-    if (condenserComposer == null) {
+    if (condenserMeghod == null) {
       throw new SteemClientException("Condenser API unavailable");
     }
     ImmutableMap.Builder<String, Object> builder =
         ImmutableMap.<String, Object>builder()
             .put("jsonrpc", JSON_RPC)
-            .put("method", condenserComposer.getMethod())
+            .put("method", condenserMeghod)
             .put("id", requestId);
-    List<Object> params = condenserComposer.getParams();
-    if (params != null) {
-      builder.put("params", params);
+    if (params.forCondenser() != null) {
+      builder.put("params", params.forCondenser());
     }
     Map<String, Object> objectMap = builder.build();
     try {
@@ -57,17 +47,16 @@ public class SteemApiRequest {
   }
 
   public String toAppbase() {
-    if (appbaseComposer == null) {
+    if (appbaseMethod == null) {
       throw new SteemClientException("Appbase API unavailable");
     }
     ImmutableMap.Builder<String, Object> builder =
         ImmutableMap.<String, Object>builder()
             .put("jsonrpc", JSON_RPC)
-            .put("method", appbaseComposer.getMethod())
+            .put("method", appbaseMethod)
             .put("id", requestId);
-    Map<String, Object> params = appbaseComposer.getParams();
-    if (!params.isEmpty()) {
-      builder.put("params", params);
+    if (params.forAppbase() != null) {
+      builder.put("params", params.forAppbase());
     }
     Map<String, Object> objectMap = builder.build();
     try {

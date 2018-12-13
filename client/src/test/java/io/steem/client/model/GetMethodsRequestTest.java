@@ -6,6 +6,7 @@ import io.steem.client.SteemClientException;
 import org.apache.commons.lang3.RandomUtils;
 import org.junit.Test;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,6 +41,6 @@ public class GetMethodsRequestTest {
     // verify
     Map<String, Object> actualObjectMap = OBJECT_MAPPER.readValue(actual, MAP_TYPE);
     assertThat(actualObjectMap).containsEntry("method", "jsonrpc.get_methods");
-    assertThat(actualObjectMap).doesNotContainKey("params");
+    assertThat(actualObjectMap).containsEntry("params", Collections.emptyMap());
   }
 }

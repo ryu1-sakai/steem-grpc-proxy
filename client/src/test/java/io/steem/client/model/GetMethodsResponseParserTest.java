@@ -38,7 +38,7 @@ public class GetMethodsResponseParserTest {
     // set up
     GetMethodsResponseParser sut = GetMethodsResponseParser.create();
 
-    //noinspection UnstableApiUsage
+    @SuppressWarnings("UnstableApiUsage")
     List<String> expectedMethods = Stream.generate(() -> RandomStringUtils.randomAlphabetic(8))
         .limit(8).collect(ImmutableList.toImmutableList());
     String responseJson = createResponseJson(expectedMethods);
