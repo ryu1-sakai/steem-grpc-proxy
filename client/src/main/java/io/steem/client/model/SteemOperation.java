@@ -6,21 +6,21 @@ import com.google.common.collect.ImmutableMap;
 import java.util.List;
 import java.util.Map;
 
-public class SteemOperation {
+public abstract class SteemOperation {
 
   private final String type;
-  private final Map<String, Object> value;
 
-  SteemOperation(String type, Map<String, Object> value) {
+  SteemOperation(String type) {
     this.type = type;
-    this.value = value;
   }
 
   public List<Object> toCondenser() {
-    return ImmutableList.of(type, value);
+    return ImmutableList.of(type, getValueMap());
   }
 
   public Map<String, Object> toAppbase() {
-    return ImmutableMap.of("type", type, "value", value);
+    return ImmutableMap.of("type", type, "value", getValueMap());
   }
+
+  protected abstract Map<String, Object> getValueMap();
 }

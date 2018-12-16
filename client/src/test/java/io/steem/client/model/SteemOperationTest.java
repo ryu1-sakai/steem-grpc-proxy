@@ -19,7 +19,12 @@ public class SteemOperationTest {
     String type = RandomStringUtils.randomAlphabetic(8);
     Map<String, Object> value = randomMap();
 
-    SteemOperation sut = new SteemOperation(type, value);
+    SteemOperation sut = new SteemOperation(type) {
+      @Override
+      protected Map<String, Object> getValueMap() {
+        return value;
+      }
+    };
 
     // exercise
     List<Object> actual = sut.toCondenser();
@@ -34,7 +39,12 @@ public class SteemOperationTest {
     String type = RandomStringUtils.randomAlphabetic(8);
     Map<String, Object> value = randomMap();
 
-    SteemOperation sut = new SteemOperation(type, value);
+    SteemOperation sut = new SteemOperation(type) {
+      @Override
+      protected Map<String, Object> getValueMap() {
+        return value;
+      }
+    };
 
     // exercise
     Map<String, Object> actual = sut.toAppbase();
