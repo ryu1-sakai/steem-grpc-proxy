@@ -10,7 +10,7 @@ public abstract class SteemOperation {
 
   private final String type;
 
-  SteemOperation(String type) {
+  protected SteemOperation(String type) {
     this.type = type;
   }
 
