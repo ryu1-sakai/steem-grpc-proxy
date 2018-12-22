@@ -8,8 +8,8 @@ dependencies {
     compile 'org.apache.commons:commons-lang3:3.8.1'
     compile 'org.slf4j:slf4j-simple:1.7.25'
 
-    compileOnly "org.projectlombok:lombok:1.16.22"
-    annotationProcessor "org.projectlombok:lombok:1.16.22"
+    compileOnly "org.projectlombok:lombok:1.18.4"
+    annotationProcessor "org.projectlombok:lombok:1.18.4"
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.assertj:assertj-core:3.11.1'
