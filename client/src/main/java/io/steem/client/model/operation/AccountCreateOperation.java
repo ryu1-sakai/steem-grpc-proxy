@@ -1,11 +1,10 @@
 package io.steem.client.model.operation;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 import io.steem.client.model.SteemAsset;
 import io.steem.client.model.SteemAuthority;
 import io.steem.client.model.SteemOperation;
+import io.steem.client.model.util.ObjectMapUtils;
 import lombok.Builder;
 import lombok.ToString;
 
@@ -15,8 +14,6 @@ import java.util.Optional;
 @Builder
 @ToString
 public class AccountCreateOperation extends SteemOperation {
-
-  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
   private final SteemAsset fee;
   private final String creator;
@@ -44,7 +41,7 @@ public class AccountCreateOperation extends SteemOperation {
   @Override
   protected Map<String, Object> getValueMap() {
       ImmutableMap.Builder<String, Object> builder = ImmutableMap.builder();
-      Optional.ofNullable(fee).ifPresent(f -> builder.put("fee", toObjectMap(f)));
+      Optional.ofNullable(fee).ifPresent(f -> builder.put("fee", ObjectMapUtils.toObjectMap(f)));
       Optional.ofNullable(creator).ifPresent(c -> builder.put("creator", c));
       Optional.ofNullable(newAccountName).ifPresent(n -> builder.put("new_account_name", n));
       Optional.ofNullable(owner).ifPresent(o -> builder.put("owner", o.compose()));
@@ -53,9 +50,5 @@ public class AccountCreateOperation extends SteemOperation {
       Optional.ofNullable(memoKey).ifPresent(m -> builder.put("memo_key", m));
       Optional.ofNullable(jsonMetadata).ifPresent(j -> builder.put("json_metadata", j));
       return builder.build();
-  }
-
-  private static <T> Map<String, Object> toObjectMap(T value) {
-    return OBJECT_MAPPER.convertValue(value, new TypeReference<Map<String, Object>>() {});
   }
 }
