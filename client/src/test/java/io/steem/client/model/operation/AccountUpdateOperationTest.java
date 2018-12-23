@@ -1,35 +1,30 @@
 package io.steem.client.model.operation;
 
 import com.google.common.collect.ImmutableMap;
-import io.steem.client.model.SteemAsset;
 import io.steem.client.model.SteemAuthority;
-import io.steem.client.model.util.ObjectMapUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Test;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class AccountCreateOperationTest {
+public class AccountUpdateOperationTest {
 
   @Test
   public void toCondenser() {
     // set up
-    SteemAsset fee = OperationTestUtils.randomSteemAsset();
-    String creator = RandomStringUtils.randomAlphabetic(8);
-    String newAccountName = RandomStringUtils.randomAlphabetic(8);
+    String accountName = RandomStringUtils.randomAlphabetic(8);
     SteemAuthority owner = OperationTestUtils.randomSteemAuthority();
     SteemAuthority active = OperationTestUtils.randomSteemAuthority();
     SteemAuthority posting = OperationTestUtils.randomSteemAuthority();
     String memoKey = RandomStringUtils.randomAlphabetic(8);
     String jsonMetadata = RandomStringUtils.randomAlphabetic(8);
 
-    AccountCreateOperation sut = AccountCreateOperation.builder()
-        .fee(fee)
-        .creator(creator)
-        .newAccountName(newAccountName)
+    AccountUpdateOperation sut = AccountUpdateOperation.builder()
+        .accountName(accountName)
         .owner(owner)
         .active(active)
         .posting(posting)
@@ -42,9 +37,7 @@ public class AccountCreateOperationTest {
 
     // verify
     Map<String, Object> params = ImmutableMap.<String, Object>builder()
-        .put("fee", ObjectMapUtils.toObjectMap(fee))
-        .put("creator", creator)
-        .put("new_account_name", newAccountName)
+        .put("new_account_name", accountName)
         .put("owner", owner.compose())
         .put("active", active.compose())
         .put("posting", posting.compose())
@@ -56,21 +49,29 @@ public class AccountCreateOperationTest {
   }
 
   @Test
+  public void toCondenser_empty() {
+    // set up
+    AccountUpdateOperation sut = AccountUpdateOperation.builder().build();
+
+    // exercise
+    List<Object> actual = sut.toCondenser();
+
+    // verify
+    assertThat(actual).containsExactly("account_create", Collections.emptyMap());
+  }
+
+  @Test
   public void toAppbase() {
     // set up
-    SteemAsset fee = OperationTestUtils.randomSteemAsset();
-    String creator = RandomStringUtils.randomAlphabetic(8);
-    String newAccountName = RandomStringUtils.randomAlphabetic(8);
+    String accountName = RandomStringUtils.randomAlphabetic(8);
     SteemAuthority owner = OperationTestUtils.randomSteemAuthority();
     SteemAuthority active = OperationTestUtils.randomSteemAuthority();
     SteemAuthority posting = OperationTestUtils.randomSteemAuthority();
     String memoKey = RandomStringUtils.randomAlphabetic(8);
     String jsonMetadata = RandomStringUtils.randomAlphabetic(8);
 
-    AccountCreateOperation sut = AccountCreateOperation.builder()
-        .fee(fee)
-        .creator(creator)
-        .newAccountName(newAccountName)
+    AccountUpdateOperation sut = AccountUpdateOperation.builder()
+        .accountName(accountName)
         .owner(owner)
         .active(active)
         .posting(posting)
@@ -83,9 +84,7 @@ public class AccountCreateOperationTest {
 
     // verify
     Map<String, Object> params = ImmutableMap.<String, Object>builder()
-        .put("fee", ObjectMapUtils.toObjectMap(fee))
-        .put("creator", creator)
-        .put("new_account_name", newAccountName)
+        .put("new_account_name", accountName)
         .put("owner", owner.compose())
         .put("active", active.compose())
         .put("posting", posting.compose())
@@ -94,6 +93,21 @@ public class AccountCreateOperationTest {
         .build();
     Map<String, Object> expected
         = ImmutableMap.of("type", "account_create", "value", params);
+
+    assertThat(actual).isEqualTo(expected);
+  }
+
+  @Test
+  public void toAppbase_empty() {
+    // set up
+    AccountUpdateOperation sut = AccountUpdateOperation.builder().build();
+
+    // exercise
+    Map<String, Object> actual = sut.toAppbase();
+
+    // verify
+    Map<String, Object> expected
+        = ImmutableMap.of("type", "account_create", "value", Collections.emptyMap());
 
     assertThat(actual).isEqualTo(expected);
   }
