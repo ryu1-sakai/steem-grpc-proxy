@@ -11,6 +11,7 @@ import lombok.Builder;
 import lombok.ToString;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -57,8 +58,10 @@ public class CommentOptionsOperation extends SteemOperation {
         .ifPresent(p -> builder.put("percent_steem_dollers", p.toProtocolValue()));
     builder.put("allow_votes", allowVotes);
     builder.put("allow_curation_rewards", allowCurationRewards);
-    Optional.ofNullable(extensions)
-        .ifPresent(e -> builder.put("extensions", ImmutableList.copyOf(e)));
+    @SuppressWarnings("UnstableApiUsage")
+    List<String> composedExtensions = extensions.stream()
+        .map(CommentOptionsExtension::toProtocol).collect(ImmutableList.toImmutableList());
+    builder.put("extensions", composedExtensions);
     return builder.build();
   }
 }
