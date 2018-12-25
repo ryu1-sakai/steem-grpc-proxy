@@ -27,7 +27,7 @@ public class CommentOptionsOperationTest {
     String permlink = RandomStringUtils.randomAlphanumeric(8);
     SteemAsset maxExpectedPayout = OperationTestUtils.randomSteemAsset();
     SteemPercent percentSteemDollers
-        = new SteemPercent(RandomUtils.nextInt(0, 100), RandomUtils.nextInt(0, 100));
+        = SteemPercent.of(RandomUtils.nextInt(0, 100), RandomUtils.nextInt(0, 100));
     boolean allowVotes = RandomUtils.nextBoolean();
     boolean allowCurationRewards = RandomUtils.nextBoolean();
     Set<CommentOptionsExtension> extensions
@@ -89,7 +89,7 @@ public class CommentOptionsOperationTest {
     String permlink = RandomStringUtils.randomAlphanumeric(8);
     SteemAsset maxExpectedPayout = OperationTestUtils.randomSteemAsset();
     SteemPercent percentSteemDollers
-        = new SteemPercent(RandomUtils.nextInt(0, 100), RandomUtils.nextInt(0, 100));
+        = SteemPercent.of(RandomUtils.nextInt(0, 100), RandomUtils.nextInt(0, 100));
     boolean allowVotes = RandomUtils.nextBoolean();
     boolean allowCurationRewards = RandomUtils.nextBoolean();
     Set<CommentOptionsExtension> extensions
