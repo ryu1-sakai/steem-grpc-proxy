@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SteemTimeTest {
 
   @Test
-  public void parse() {
+  public void create() {
     // set up
     Instant expected = randomInstant();
     OffsetDateTime time = expected.atOffset(ZoneOffset.UTC);
@@ -21,20 +21,20 @@ public class SteemTimeTest {
         time.getHour(), time.getMinute(), time.getSecond());
 
     // exercise
-    SteemTime actual = SteemTime.parse(steemTimeString);
+    SteemTime actual = SteemTime.create(steemTimeString);
 
     // verify
     assertThat(actual.toInstant()).isEqualTo(expected);
   }
 
   @Test
-  public void compose() {
+  public void format() {
     // set up
     Instant instant = randomInstant();
     SteemTime sut = new SteemTime(instant);
 
     // exercise
-    String actual = sut.compose();
+    String actual = sut.format();
 
     // verify
     OffsetDateTime time = instant.atOffset(ZoneOffset.UTC);

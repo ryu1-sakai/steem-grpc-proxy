@@ -1,5 +1,7 @@
 package io.steem.client.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.google.common.annotations.VisibleForTesting;
 
 import java.time.Instant;
@@ -19,13 +21,15 @@ public class SteemTime {
     this.instant = instant;
   }
 
-  public static SteemTime parse(String steemTimeString) {
+  @JsonCreator
+  public static SteemTime create(String steemTimeString) {
     LocalDateTime localDateTime = FORMATTER.parse(steemTimeString, LocalDateTime::from);
     Instant instant = localDateTime.toInstant(ZoneOffset.UTC);
     return new SteemTime(instant);
   }
 
-  public String compose() {
+  @JsonFormat
+  public String format() {
     return FORMATTER.format(instant.atOffset(ZoneOffset.UTC));
   }
 
@@ -35,6 +39,6 @@ public class SteemTime {
 
   @Override
   public String toString() {
-    return compose();
+    return format();
   }
 }

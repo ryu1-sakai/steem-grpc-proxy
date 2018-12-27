@@ -1,5 +1,6 @@
 package io.steem.client.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.google.common.base.Verify;
 
 public class SteemPercent {
@@ -25,6 +26,7 @@ public class SteemPercent {
     return new SteemPercent(integerPart, hundredths);
   }
 
+  @JsonFormat
   public int toProtocolValue() {
     return protocolValue;
   }

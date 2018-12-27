@@ -1,5 +1,8 @@
 package io.steem.client.model;
 
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
@@ -18,8 +21,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class SteemAuthorityTest {
 
+  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+  private static final JavaType MAP_TYPE
+      = OBJECT_MAPPER.getTypeFactory().constructMapType(Map.class, String.class, Object.class);
+
   @Test
-  public void compose() {
+  public void toObjectMap() {
     // set up
     long weightThreshold = RandomUtils.nextLong(0, Integer.MAX_VALUE * 2L) + 1; // uint32
     SortedMap<String, Integer> accountAuths = randomSortedMap();
@@ -28,7 +35,7 @@ public class SteemAuthorityTest {
     SteemAuthority sut = new SteemAuthority(weightThreshold, accountAuths, keyAuths);
 
     // exercise
-    Map<String, Object> actual = sut.compose();
+    Map<String, Object> actual = OBJECT_MAPPER.convertValue(sut, MAP_TYPE);
 
     // verify
     @SuppressWarnings("UnstableApiUsage")
