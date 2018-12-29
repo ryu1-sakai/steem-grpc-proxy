@@ -26,7 +26,7 @@ public class AccountCreateOperationTest {
     String memoKey = RandomStringUtils.randomAlphabetic(8);
     String jsonMetadata = RandomStringUtils.randomAlphabetic(8);
 
-    AccountCreateOperation sut = AccountCreateOperation.builder()
+    AccountCreateOperation.Value value = AccountCreateOperation.Value.builder()
         .fee(fee)
         .creator(creator)
         .newAccountName(newAccountName)
@@ -36,6 +36,7 @@ public class AccountCreateOperationTest {
         .memoKey(memoKey)
         .jsonMetadata(jsonMetadata)
         .build();
+    AccountCreateOperation sut = AccountCreateOperation.of(value);
 
     // exercise
     List<Object> actual = sut.toCondenser();
@@ -67,7 +68,7 @@ public class AccountCreateOperationTest {
     String memoKey = RandomStringUtils.randomAlphabetic(8);
     String jsonMetadata = RandomStringUtils.randomAlphabetic(8);
 
-    AccountCreateOperation sut = AccountCreateOperation.builder()
+    AccountCreateOperation.Value value = AccountCreateOperation.Value.builder()
         .fee(fee)
         .creator(creator)
         .newAccountName(newAccountName)
@@ -77,6 +78,7 @@ public class AccountCreateOperationTest {
         .memoKey(memoKey)
         .jsonMetadata(jsonMetadata)
         .build();
+    AccountCreateOperation sut = AccountCreateOperation.of(value);
 
     // exercise
     Map<String, Object> actual = sut.toAppbase();
@@ -92,8 +94,7 @@ public class AccountCreateOperationTest {
         .put("memo_key", memoKey)
         .put("json_metadata", jsonMetadata)
         .build();
-    Map<String, Object> expected
-        = ImmutableMap.of("type", "account_create", "value", params);
+    Map<String, Object> expected = ImmutableMap.of("type", "account_create", "value", params);
 
     assertThat(actual).isEqualTo(expected);
   }
