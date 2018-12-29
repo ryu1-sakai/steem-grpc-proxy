@@ -1,5 +1,6 @@
 package io.steem.client.model;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.VerifyException;
 import com.google.common.collect.ImmutableList;
 import org.junit.Test;
@@ -17,6 +18,8 @@ import static org.assertj.core.api.Assumptions.assumeThat;
 @RunWith(Theories.class)
 public class SteemPercentTest {
 
+  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
   @DataPoints
   public static final List<Integer> INTEGERS = ImmutableList.of(
       Integer.MIN_VALUE, -1,
@@ -24,14 +27,19 @@ public class SteemPercentTest {
       101, SteemPercent.MAX_INTEGER_PART, SteemPercent.MAX_INTEGER_PART + 1);
 
   @Theory
-  public void of(int integerPart, int hundredths) {
+  public void serialize(int integerPart, int hundredths) {
+    // set up
     assumeThat(integerPart)
         .isGreaterThanOrEqualTo(0).isLessThanOrEqualTo(SteemPercent.MAX_INTEGER_PART);
     assumeThat(hundredths).isGreaterThanOrEqualTo(0).isLessThan(100);
     assumeThat(integerPart * 100 + hundredths).isLessThanOrEqualTo(SteemPercent.MAX_PROTOCOL_VALUE);
 
+    // exercise
     SteemPercent sut = SteemPercent.of(integerPart, hundredths);
-    assertThat(sut.toProtocolValue()).isEqualTo(integerPart * 100 + hundredths);
+    int actual = OBJECT_MAPPER.convertValue(sut, int.class);
+
+    // verify
+    assertThat(actual).isEqualTo(integerPart * 100 + hundredths);
   }
 
   @Theory

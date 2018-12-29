@@ -1,9 +1,24 @@
 package io.steem.client.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.base.Verify;
 
+import java.io.IOException;
+
+@JsonSerialize(using = SteemPercent.Serializer.class)
 public class SteemPercent {
+
+  public static class Serializer extends JsonSerializer<SteemPercent> {
+
+    @Override
+    public void serialize(SteemPercent value, JsonGenerator gen, SerializerProvider serializers)
+        throws IOException {
+      gen.writeNumber(value.toProtocolValue());
+    }
+  }
 
   public static final int MAX_PROTOCOL_VALUE = (int) Math.pow(2, 16) - 1; // uint16_t
   public static final int MAX_INTEGER_PART = MAX_PROTOCOL_VALUE / 100;
@@ -26,7 +41,6 @@ public class SteemPercent {
     return new SteemPercent(integerPart, hundredths);
   }
 
-  @JsonFormat
   public int toProtocolValue() {
     return protocolValue;
   }
