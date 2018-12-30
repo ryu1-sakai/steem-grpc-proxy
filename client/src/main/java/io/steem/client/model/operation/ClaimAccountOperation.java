@@ -1,38 +1,44 @@
 package io.steem.client.model.operation;
 
-import com.google.common.collect.ImmutableMap;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import io.steem.client.model.FutureExtensions;
 import io.steem.client.model.SteemAsset;
 import io.steem.client.model.SteemOperation;
+import io.steem.client.model.util.ObjectMapUtils;
 import lombok.Builder;
 import lombok.ToString;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
-@Builder
 @ToString
 public class ClaimAccountOperation extends SteemOperation {
+  
+  @Builder
+  @lombok.Value
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+  public static class Value {
+    private final String creator;
+    private final SteemAsset fee;
+    private final List<FutureExtensions> extensions;
+  }
 
-  private final String creator;
-  private final SteemAsset fee;
-  private final List<FutureExtensions> extensions;
+  private final Value value;
 
-  private ClaimAccountOperation(String creator, SteemAsset fee, List<FutureExtensions> extensions) {
+  private ClaimAccountOperation(Value value) {
     super("claim_account");
-    this.creator = creator;
-    this.fee = fee;
-    this.extensions = extensions;
+    this.value = value;
+  }
+
+  public static ClaimAccountOperation of(Value value) {
+    return new ClaimAccountOperation(value);
   }
 
   @Override
   protected Map<String, Object> getValueMap() {
-    ImmutableMap.Builder<String, Object> builder = ImmutableMap.builder();
-    Optional.ofNullable(creator).ifPresent(c -> builder.put("creator", c));
-    Optional.ofNullable(fee).ifPresent(f -> builder.put("fee", f));
-    builder.put("extensions", extensions != null ? extensions : Collections.emptyList());
-    return builder.build();
+    return ObjectMapUtils.toObjectMap(value);
   }
 }

@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import io.steem.client.model.FutureExtensions;
 import io.steem.client.model.SteemAsset;
+import io.steem.client.model.util.ObjectMapUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Test;
 
@@ -21,17 +22,25 @@ public class ClaimAccountOperationTest {
     SteemAsset fee = OperationTestUtils.randomSteemAsset();
     List<FutureExtensions> extensions = ImmutableList.of(new FutureExtensions());
 
-    ClaimAccountOperation sut
-        = ClaimAccountOperation.builder().creator(creator).fee(fee).extensions(extensions).build();
+    ClaimAccountOperation.Value value = ClaimAccountOperation.Value.builder()
+        .creator(creator)
+        .fee(fee)
+        .extensions(extensions)
+        .build();
+    ClaimAccountOperation sut = ClaimAccountOperation.of(value);
 
     // exercise
     List<Object> actual = sut.toCondenser();
 
     // verify
+    @SuppressWarnings("UnstableApiUsage")
+    List<Map<String, Object>> extensionMaps = extensions.stream()
+        .map(ObjectMapUtils::toObjectMap)
+        .collect(ImmutableList.toImmutableList());
     Map<String, Object> expectedMap = ImmutableMap.<String, Object>builder()
         .put("creator", creator)
-        .put("fee", fee)
-        .put("extensions", extensions)
+        .put("fee", ObjectMapUtils.toObjectMap(fee))
+        .put("extensions", extensionMaps)
         .build();
 
     assertThat(actual).containsExactly("claim_account", expectedMap);
@@ -44,17 +53,25 @@ public class ClaimAccountOperationTest {
     SteemAsset fee = OperationTestUtils.randomSteemAsset();
     List<FutureExtensions> extensions = ImmutableList.of(new FutureExtensions());
 
-    ClaimAccountOperation sut
-        = ClaimAccountOperation.builder().creator(creator).fee(fee).extensions(extensions).build();
+    ClaimAccountOperation.Value value = ClaimAccountOperation.Value.builder()
+        .creator(creator)
+        .fee(fee)
+        .extensions(extensions)
+        .build();
+    ClaimAccountOperation sut = ClaimAccountOperation.of(value);
 
     // exercise
     Map<String, Object> actual = sut.toAppbase();
 
     // verify
+    @SuppressWarnings("UnstableApiUsage")
+    List<Map<String, Object>> extensionMaps = extensions.stream()
+        .map(ObjectMapUtils::toObjectMap)
+        .collect(ImmutableList.toImmutableList());
     Map<String, Object> expectedMap = ImmutableMap.<String, Object>builder()
         .put("creator", creator)
-        .put("fee", fee)
-        .put("extensions", extensions)
+        .put("fee", ObjectMapUtils.toObjectMap(fee))
+        .put("extensions", extensionMaps)
         .build();
     Map<String, Object> expected = ImmutableMap.of("type", "claim_account", "value", expectedMap);
 
