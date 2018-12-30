@@ -1,45 +1,45 @@
 package io.steem.client.model.operation;
 
-import com.google.common.collect.ImmutableMap;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import io.steem.client.model.SteemAuthority;
 import io.steem.client.model.SteemOperation;
+import io.steem.client.model.util.ObjectMapUtils;
 import lombok.Builder;
 import lombok.ToString;
 
 import java.util.Map;
-import java.util.Optional;
 
-@Builder
 @ToString
 public class AccountUpdateOperation extends SteemOperation {
 
-  private final String accountName;
-  private final SteemAuthority owner;
-  private final SteemAuthority active;
-  private final SteemAuthority posting;
-  private final String memoKey;
-  private final String jsonMetadata;
+  @Builder
+  @lombok.Value
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+  public static class Value {
+    private final String account;
+    private final SteemAuthority owner;
+    private final SteemAuthority active;
+    private final SteemAuthority posting;
+    private final String memoKey;
+    private final String jsonMetadata;
+  }
 
-  private AccountUpdateOperation(String accountName, SteemAuthority owner, SteemAuthority active,
-                                 SteemAuthority posting, String memoKey, String jsonMetadata) {
-    super("account_create");
-    this.accountName = accountName;
-    this.owner = owner;
-    this.active = active;
-    this.posting = posting;
-    this.memoKey = memoKey;
-    this.jsonMetadata = jsonMetadata;
+  private final AccountUpdateOperation.Value value;
+
+  private AccountUpdateOperation(AccountUpdateOperation.Value value) {
+    super("account_update");
+    this.value = value;
+  }
+
+  public static AccountUpdateOperation of(AccountUpdateOperation.Value value) {
+    return new AccountUpdateOperation(value);
   }
 
   @Override
   protected Map<String, Object> getValueMap() {
-    ImmutableMap.Builder<String, Object> builder = ImmutableMap.builder();
-    Optional.ofNullable(accountName).ifPresent(n -> builder.put("new_account_name", n));
-    Optional.ofNullable(owner).ifPresent(o -> builder.put("owner", o.compose()));
-    Optional.ofNullable(active).ifPresent(a -> builder.put("active", a.compose()));
-    Optional.ofNullable(posting).ifPresent(p -> builder.put("posting", p.compose()));
-    Optional.ofNullable(memoKey).ifPresent(m -> builder.put("memo_key", m));
-    Optional.ofNullable(jsonMetadata).ifPresent(j -> builder.put("json_metadata", j));
-    return builder.build();
+    return ObjectMapUtils.toObjectMap(value);
   }
 }
