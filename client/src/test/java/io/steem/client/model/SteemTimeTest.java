@@ -1,5 +1,6 @@
 package io.steem.client.model;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.RandomUtils;
 import org.junit.Test;
 
@@ -11,8 +12,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class SteemTimeTest {
 
+  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
   @Test
-  public void create() {
+  public void from() {
     // set up
     Instant expected = randomInstant();
     OffsetDateTime time = expected.atOffset(ZoneOffset.UTC);
@@ -21,20 +24,20 @@ public class SteemTimeTest {
         time.getHour(), time.getMinute(), time.getSecond());
 
     // exercise
-    SteemTime actual = SteemTime.create(steemTimeString);
+    SteemTime actual = SteemTime.from(steemTimeString);
 
     // verify
     assertThat(actual.toInstant()).isEqualTo(expected);
   }
 
   @Test
-  public void format() {
+  public void serialize() {
     // set up
     Instant instant = randomInstant();
-    SteemTime sut = new SteemTime(instant);
+    SteemTime sut = SteemTime.of(instant);
 
     // exercise
-    String actual = sut.format();
+    String actual = OBJECT_MAPPER.convertValue(sut, String.class);
 
     // verify
     OffsetDateTime time = instant.atOffset(ZoneOffset.UTC);
