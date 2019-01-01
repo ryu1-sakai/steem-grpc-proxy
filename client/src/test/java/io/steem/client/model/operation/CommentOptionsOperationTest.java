@@ -34,7 +34,7 @@ public class CommentOptionsOperationTest {
         = ImmutableSet.of(CommentOptionsExtension.ALLOWED_VOTE_ASSETS,
         CommentOptionsExtension.COMMENT_PAYOUT_BENEFICIARIES);
 
-    CommentOptionsOperation sut = CommentOptionsOperation.builder()
+    CommentOptionsOperation.Value value = CommentOptionsOperation.Value.builder()
         .author(author)
         .permlink(permlink)
         .maxExpectedPayout(maxExpectedPayout)
@@ -43,6 +43,7 @@ public class CommentOptionsOperationTest {
         .allowCurationRewards(allowCurationRewards)
         .extensions(extensions)
         .build();
+    CommentOptionsOperation sut = CommentOptionsOperation.of(value);
 
     // exercise
     List<Object> actual = sut.toCondenser();
@@ -67,7 +68,8 @@ public class CommentOptionsOperationTest {
   @Test
   public void toCondenser_empty() {
     // set up
-    CommentOptionsOperation sut = CommentOptionsOperation.builder().build();
+    CommentOptionsOperation sut
+        = CommentOptionsOperation.of(CommentOptionsOperation.Value.builder().build());
 
     // exercise
     List<Object> actual = sut.toCondenser();
@@ -96,7 +98,7 @@ public class CommentOptionsOperationTest {
         = ImmutableSet.of(CommentOptionsExtension.ALLOWED_VOTE_ASSETS,
         CommentOptionsExtension.COMMENT_PAYOUT_BENEFICIARIES);
 
-    CommentOptionsOperation sut = CommentOptionsOperation.builder()
+    CommentOptionsOperation.Value value = CommentOptionsOperation.Value.builder()
         .author(author)
         .permlink(permlink)
         .maxExpectedPayout(maxExpectedPayout)
@@ -105,6 +107,7 @@ public class CommentOptionsOperationTest {
         .allowCurationRewards(allowCurationRewards)
         .extensions(extensions)
         .build();
+    CommentOptionsOperation sut = CommentOptionsOperation.of(value);
 
     // exercise
     Map<String, Object> actual = sut.toAppbase();
@@ -130,7 +133,8 @@ public class CommentOptionsOperationTest {
   @Test
   public void toAppbase_empty() {
     // set up
-    CommentOptionsOperation sut = CommentOptionsOperation.builder().build();
+    CommentOptionsOperation sut
+        = CommentOptionsOperation.of(CommentOptionsOperation.Value.builder().build());
 
     // exercise
     Map<String, Object> actual = sut.toAppbase();
