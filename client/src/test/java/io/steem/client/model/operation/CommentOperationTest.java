@@ -22,7 +22,7 @@ public class CommentOperationTest {
     String body = RandomStringUtils.randomAlphanumeric(8);
     String jsonMetadata = RandomStringUtils.randomAlphanumeric(8);
 
-    CommentOperation sut = CommentOperation.builder()
+    CommentOperation.Value value = CommentOperation.Value.builder()
         .parentAuthor(parentAuthor)
         .parentPermlink(parentPermlink)
         .author(author)
@@ -31,6 +31,7 @@ public class CommentOperationTest {
         .body(body)
         .jsonMetadata(jsonMetadata)
         .build();
+    CommentOperation sut = CommentOperation.of(value);
 
     // exercise
     List<Object> actual = sut.toCondenser();
@@ -60,7 +61,7 @@ public class CommentOperationTest {
     String body = RandomStringUtils.randomAlphanumeric(8);
     String jsonMetadata = RandomStringUtils.randomAlphanumeric(8);
 
-    CommentOperation sut = CommentOperation.builder()
+    CommentOperation.Value value = CommentOperation.Value.builder()
         .parentAuthor(parentAuthor)
         .parentPermlink(parentPermlink)
         .author(author)
@@ -69,6 +70,7 @@ public class CommentOperationTest {
         .body(body)
         .jsonMetadata(jsonMetadata)
         .build();
+    CommentOperation sut = CommentOperation.of(value);
 
     // exercise
     Map<String, Object> actual = sut.toAppbase();
