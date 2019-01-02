@@ -22,14 +22,6 @@ public class SteemAuthority {
   @JsonIgnore
   private SortedMap<String, Integer> keyAuths; // key -> weight
 
-  public Map<String, Object> compose() {
-    return ImmutableMap.<String, Object>builder()
-        .put("weight_threshold", weightThreshold)
-        .put("account_auths", toNestedList(accountAuths))
-        .put("key_auths", toNestedList(keyAuths))
-        .build();
-  }
-
   @JsonProperty("account_auths")
   public List<List<Object>> accountAuths() {
     return toNestedList(accountAuths);

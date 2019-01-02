@@ -2,6 +2,7 @@ package io.steem.client.model.operation;
 
 import com.google.common.collect.ImmutableMap;
 import io.steem.client.model.SteemAuthority;
+import io.steem.client.model.util.ObjectMapUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Test;
 
@@ -39,9 +40,9 @@ public class AccountUpdateOperationTest {
     // verify
     Map<String, Object> params = ImmutableMap.<String, Object>builder()
         .put("account", account)
-        .put("owner", owner.compose())
-        .put("active", active.compose())
-        .put("posting", posting.compose())
+        .put("owner", ObjectMapUtils.toObjectMap(owner))
+        .put("active", ObjectMapUtils.toObjectMap(active))
+        .put("posting", ObjectMapUtils.toObjectMap(posting))
         .put("memo_key", memoKey)
         .put("json_metadata", jsonMetadata)
         .build();
@@ -88,9 +89,9 @@ public class AccountUpdateOperationTest {
     // verify
     Map<String, Object> params = ImmutableMap.<String, Object>builder()
         .put("account", account)
-        .put("owner", owner.compose())
-        .put("active", active.compose())
-        .put("posting", posting.compose())
+        .put("owner", ObjectMapUtils.toObjectMap(owner))
+        .put("active", ObjectMapUtils.toObjectMap(active))
+        .put("posting", ObjectMapUtils.toObjectMap(posting))
         .put("memo_key", memoKey)
         .put("json_metadata", jsonMetadata)
         .build();
