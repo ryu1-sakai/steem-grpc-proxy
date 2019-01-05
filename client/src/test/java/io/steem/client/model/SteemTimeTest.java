@@ -49,7 +49,7 @@ public class SteemTimeTest {
   }
 
   private static Instant randomInstant() {
-    long maxEpochSecond = Instant.parse("2100-01-01T00:00:00Z").toEpochMilli() / 1000;
+    long maxEpochSecond = SteemTime.MAX_INSTANT.getEpochSecond();
     return Instant.ofEpochSecond(RandomUtils.nextLong(0, maxEpochSecond));
   }
 }

@@ -3,9 +3,11 @@ package io.steem.client.model.operation;
 import com.google.common.collect.ImmutableSortedMap;
 import io.steem.client.model.SteemAsset;
 import io.steem.client.model.SteemAuthority;
+import io.steem.client.model.SteemTime;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 
+import java.time.Instant;
 import java.util.SortedMap;
 
 public final class OperationTestUtils {
@@ -25,5 +27,10 @@ public final class OperationTestUtils {
         RandomStringUtils.randomAlphabetic(8), RandomUtils.nextInt(),
         RandomStringUtils.randomAlphabetic(8), RandomUtils.nextInt());
     return new SteemAuthority(RandomUtils.nextLong(), accountAuths, keyAuths);
+  }
+
+  public static SteemTime randomSteemTime() {
+    long seconds = RandomUtils.nextLong(0, SteemTime.MAX_INSTANT.getEpochSecond() + 1);
+    return SteemTime.of(Instant.ofEpochSecond(seconds));
   }
 }

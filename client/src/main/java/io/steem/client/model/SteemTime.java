@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.google.common.annotations.VisibleForTesting;
+import lombok.Value;
 
 import java.io.IOException;
 import java.time.Instant;
@@ -13,7 +13,11 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
 @JsonSerialize(using = SteemTime.Serializer.class)
+@Value(staticConstructor = "of")
 public class SteemTime {
+
+  // DateTimeFormatter isn't compatible with SteemTime when the year is larger tha 9999
+  public static final Instant MAX_INSTANT = Instant.parse("+10000-01-01T00:00:00Z").minusSeconds(1);
 
   public static class Serializer extends JsonSerializer<SteemTime> {
 
@@ -28,15 +32,6 @@ public class SteemTime {
       = DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss");
 
   private final Instant instant;
-
-  @VisibleForTesting
-  private SteemTime(Instant instant) {
-    this.instant = instant;
-  }
-
-  public static SteemTime of(Instant instant) {
-    return new SteemTime(instant);
-  }
 
   public static SteemTime from(String steemTimeString) {
     LocalDateTime localDateTime = FORMATTER.parse(steemTimeString, LocalDateTime::from);
