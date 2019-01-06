@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class TransferOperationTest {
 
   @Test
-  public void toCondenser() {
+  public void toCondenserAndAppbase() {
     // set up
     String from = RandomStringUtils.randomAlphanumeric(8);
     String to = RandomStringUtils.randomAlphanumeric(8);
@@ -30,7 +30,8 @@ public class TransferOperationTest {
     TransferOperation sut = TransferOperation.of(value);
 
     // exercise
-    List<Object> actual = sut.toCondenser();
+    List<Object> actualCondenser = sut.toCondenser();
+    Map<String, Object> actualAppbase = sut.toAppbase();
 
     // verify
     Map<String, Object> expectedMap = ImmutableMap.<String, Object>builder()
@@ -39,38 +40,9 @@ public class TransferOperationTest {
         .put("amount", ObjectMapUtils.toObjectMap(amount))
         .put("memo", memo)
         .build();
+    Map<String, Object> expectedAppbase = ImmutableMap.of("type", "transfer", "value", expectedMap);
 
-    assertThat(actual).containsExactly("transfer", expectedMap);
-  }
-
-  @Test
-  public void toAppbase() {
-    // set up
-    String from = RandomStringUtils.randomAlphanumeric(8);
-    String to = RandomStringUtils.randomAlphanumeric(8);
-    SteemAsset amount = OperationTestUtils.randomSteemAsset();
-    String memo = RandomStringUtils.randomAlphanumeric(8);
-
-    TransferOperation.Value value = TransferOperation.Value.builder()
-        .from(from)
-        .to(to)
-        .amount(amount)
-        .memo(memo)
-        .build();
-    TransferOperation sut = TransferOperation.of(value);
-
-    // exercise
-    Map<String, Object> actual = sut.toAppbase();
-
-    // verify
-    Map<String, Object> expectedMap = ImmutableMap.<String, Object>builder()
-        .put("from", from)
-        .put("to", to)
-        .put("amount", ObjectMapUtils.toObjectMap(amount))
-        .put("memo", memo)
-        .build();
-    Map<String, Object> expected = ImmutableMap.of("type", "transfer", "value", expectedMap);
-
-    assertThat(actual).isEqualTo(expected);
+    assertThat(actualCondenser).containsExactly("transfer", expectedMap);
+    assertThat(actualAppbase).isEqualTo(expectedAppbase);
   }
 }

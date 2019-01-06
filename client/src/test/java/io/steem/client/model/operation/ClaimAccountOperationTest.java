@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ClaimAccountOperationTest {
 
   @Test
-  public void toCondenser() {
+  public void toCondenserAndCondenser() {
     // set up
     String creator = RandomStringUtils.randomAlphanumeric(8);
     SteemAsset fee = OperationTestUtils.randomSteemAsset();
@@ -30,7 +30,8 @@ public class ClaimAccountOperationTest {
     ClaimAccountOperation sut = ClaimAccountOperation.of(value);
 
     // exercise
-    List<Object> actual = sut.toCondenser();
+    List<Object> actualCondenser = sut.toCondenser();
+    Map<String, Object> actualAppbase = sut.toAppbase();
 
     // verify
     @SuppressWarnings("UnstableApiUsage")
@@ -42,39 +43,10 @@ public class ClaimAccountOperationTest {
         .put("fee", ObjectMapUtils.toObjectMap(fee))
         .put("extensions", extensionMaps)
         .build();
+    Map<String, Object> expectedAppbase
+        = ImmutableMap.of("type", "claim_account", "value", expectedMap);
 
-    assertThat(actual).containsExactly("claim_account", expectedMap);
-  }
-
-  @Test
-  public void toAppbase() {
-    // set up
-    String creator = RandomStringUtils.randomAlphanumeric(8);
-    SteemAsset fee = OperationTestUtils.randomSteemAsset();
-    List<FutureExtensions> extensions = ImmutableList.of(new FutureExtensions());
-
-    ClaimAccountOperation.Value value = ClaimAccountOperation.Value.builder()
-        .creator(creator)
-        .fee(fee)
-        .extensions(extensions)
-        .build();
-    ClaimAccountOperation sut = ClaimAccountOperation.of(value);
-
-    // exercise
-    Map<String, Object> actual = sut.toAppbase();
-
-    // verify
-    @SuppressWarnings("UnstableApiUsage")
-    List<Map<String, Object>> extensionMaps = extensions.stream()
-        .map(ObjectMapUtils::toObjectMap)
-        .collect(ImmutableList.toImmutableList());
-    Map<String, Object> expectedMap = ImmutableMap.<String, Object>builder()
-        .put("creator", creator)
-        .put("fee", ObjectMapUtils.toObjectMap(fee))
-        .put("extensions", extensionMaps)
-        .build();
-    Map<String, Object> expected = ImmutableMap.of("type", "claim_account", "value", expectedMap);
-
-    assertThat(actual).isEqualTo(expected);
+    assertThat(actualCondenser).containsExactly("claim_account", expectedMap);
+    assertThat(actualAppbase).isEqualTo(expectedAppbase);
   }
 }

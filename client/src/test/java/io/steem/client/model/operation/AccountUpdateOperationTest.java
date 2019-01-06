@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class AccountUpdateOperationTest {
 
   @Test
-  public void toCondenser() {
+  public void toCondenserAndCondenser() {
     // set up
     String account = RandomStringUtils.randomAlphabetic(8);
     SteemAuthority owner = OperationTestUtils.randomSteemAuthority();
@@ -35,7 +35,8 @@ public class AccountUpdateOperationTest {
     AccountUpdateOperation sut = AccountUpdateOperation.of(value);
 
     // exercise
-    List<Object> actual = sut.toCondenser();
+    List<Object> actualCondenser = sut.toCondenser();
+    Map<String, Object> actualAppbase = sut.toAppbase();
 
     // verify
     Map<String, Object> params = ImmutableMap.<String, Object>builder()
@@ -46,74 +47,28 @@ public class AccountUpdateOperationTest {
         .put("memo_key", memoKey)
         .put("json_metadata", jsonMetadata)
         .build();
-
-    assertThat(actual).containsExactly("account_update", params);
-  }
-
-  @Test
-  public void toCondenser_empty() {
-    // set up
-    AccountUpdateOperation sut
-        = AccountUpdateOperation.of(AccountUpdateOperation.Value.builder().build());
-
-    // exercise
-    List<Object> actual = sut.toCondenser();
-
-    // verify
-    assertThat(actual).containsExactly("account_update", Collections.emptyMap());
-  }
-
-  @Test
-  public void toAppbase() {
-    // set up
-    String account = RandomStringUtils.randomAlphabetic(8);
-    SteemAuthority owner = OperationTestUtils.randomSteemAuthority();
-    SteemAuthority active = OperationTestUtils.randomSteemAuthority();
-    SteemAuthority posting = OperationTestUtils.randomSteemAuthority();
-    String memoKey = RandomStringUtils.randomAlphabetic(8);
-    String jsonMetadata = RandomStringUtils.randomAlphabetic(8);
-
-    AccountUpdateOperation.Value value = AccountUpdateOperation.Value.builder()
-        .account(account)
-        .owner(owner)
-        .active(active)
-        .posting(posting)
-        .memoKey(memoKey)
-        .jsonMetadata(jsonMetadata)
-        .build();
-    AccountUpdateOperation sut = AccountUpdateOperation.of(value);
-
-    // exercise
-    Map<String, Object> actual = sut.toAppbase();
-
-    // verify
-    Map<String, Object> params = ImmutableMap.<String, Object>builder()
-        .put("account", account)
-        .put("owner", ObjectMapUtils.toObjectMap(owner))
-        .put("active", ObjectMapUtils.toObjectMap(active))
-        .put("posting", ObjectMapUtils.toObjectMap(posting))
-        .put("memo_key", memoKey)
-        .put("json_metadata", jsonMetadata)
-        .build();
-    Map<String, Object> expected
+    Map<String, Object> expectedAppbase
         = ImmutableMap.of("type", "account_update", "value", params);
 
-    assertThat(actual).isEqualTo(expected);
+    assertThat(actualCondenser).containsExactly("account_update", params);
+    assertThat(actualAppbase).isEqualTo(expectedAppbase);
   }
 
   @Test
-  public void toAppbase_empty() {
+  public void toCondenserAndAppbase_empty() {
     // set up
     AccountUpdateOperation sut
         = AccountUpdateOperation.of(AccountUpdateOperation.Value.builder().build());
 
     // exercise
-    Map<String, Object> actual = sut.toAppbase();
+    List<Object> actualCondenser = sut.toCondenser();
+    Map<String, Object> actualAppbase = sut.toAppbase();
 
     // verify
-    Map<String, Object> expected
+    Map<String, Object> expectedAppbase
         = ImmutableMap.of("type", "account_update", "value", Collections.emptyMap());
 
-    assertThat(actual).isEqualTo(expected);
+    assertThat(actualCondenser).containsExactly("account_update", Collections.emptyMap());
+    assertThat(actualAppbase).isEqualTo(expectedAppbase);
   }
 }

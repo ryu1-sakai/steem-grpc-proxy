@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class VoteOperationTest {
 
   @Test
-  public void toCondenser() {
+  public void toCondenserAndAppbase() {
     // set up
     String voter = RandomStringUtils.randomAlphanumeric(8);
     String author = RandomStringUtils.randomAlphanumeric(8);
@@ -29,7 +29,8 @@ public class VoteOperationTest {
     VoteOperation sut = VoteOperation.of(value);
 
     // exercise
-    List<Object> actual = sut.toCondenser();
+    List<Object> actualCondenser = sut.toCondenser();
+    Map<String, Object> actualAppbase = sut.toAppbase();
 
     // verify
     Map<String, Object> expectedMap = ImmutableMap.<String, Object>builder()
@@ -38,38 +39,9 @@ public class VoteOperationTest {
         .put("permlink", permlink)
         .put("weight", weight)
         .build();
+    Map<String, Object> expectedAppbase = ImmutableMap.of("type", "vote", "value", expectedMap);
 
-    assertThat(actual).containsExactly("vote", expectedMap);
-  }
-
-  @Test
-  public void toAppbase() {
-    // set up
-    String voter = RandomStringUtils.randomAlphanumeric(8);
-    String author = RandomStringUtils.randomAlphanumeric(8);
-    String permlink = RandomStringUtils.randomAlphanumeric(8);
-    short weight = (short) RandomUtils.nextInt(0, Short.MAX_VALUE + 1);
-
-    VoteOperation.Value value = VoteOperation.Value.builder()
-        .voter(voter)
-        .author(author)
-        .permlink(permlink)
-        .weight(weight)
-        .build();
-    VoteOperation sut = VoteOperation.of(value);
-
-    // exercise
-    Map<String, Object> actual = sut.toAppbase();
-
-    // verify
-    Map<String, Object> expectedMap = ImmutableMap.<String, Object>builder()
-        .put("voter", voter)
-        .put("author", author)
-        .put("permlink", permlink)
-        .put("weight", weight)
-        .build();
-    Map<String, Object> expected = ImmutableMap.of("type", "vote", "value", expectedMap);
-
-    assertThat(actual).isEqualTo(expected);
+    assertThat(actualCondenser).containsExactly("vote", expectedMap);
+    assertThat(actualAppbase).isEqualTo(expectedAppbase);
   }
 }

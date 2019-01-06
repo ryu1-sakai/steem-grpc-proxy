@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class CommentOptionsOperationTest {
 
   @Test
-  public void toCondenser() {
+  public void toCondenserAndAppbase() {
     // set up
     String author = RandomStringUtils.randomAlphanumeric(8);
     String permlink = RandomStringUtils.randomAlphanumeric(8);
@@ -46,7 +46,8 @@ public class CommentOptionsOperationTest {
     CommentOptionsOperation sut = CommentOptionsOperation.of(value);
 
     // exercise
-    List<Object> actual = sut.toCondenser();
+    List<Object> actualCondesner = sut.toCondenser();
+    Map<String, Object> actualAppbase = sut.toAppbase();
 
     // verify
     List<String> expectedExtensions = ImmutableList.of(
@@ -61,18 +62,22 @@ public class CommentOptionsOperationTest {
         .put("allow_curation_rewards", allowCurationRewards)
         .put("extensions", expectedExtensions)
         .build();
+    Map<String, Object> expectedAppbase
+        = ImmutableMap.of("type", "comment_options", "value", expectedMap);
 
-    assertThat(actual).containsExactly("comment_options", expectedMap);
+    assertThat(actualCondesner).containsExactly("comment_options", expectedMap);
+    assertThat(actualAppbase).isEqualTo(expectedAppbase);
   }
 
   @Test
-  public void toCondenser_empty() {
+  public void toCondenserAndAppbase_empty() {
     // set up
     CommentOptionsOperation sut
         = CommentOptionsOperation.of(CommentOptionsOperation.Value.builder().build());
 
     // exercise
-    List<Object> actual = sut.toCondenser();
+    List<Object> actualCondenser = sut.toCondenser();
+    Map<String, Object> actualAppbase = sut.toAppbase();
 
     // verify
     Map<String, Object> expectedMap = ImmutableMap.<String, Object>builder()
@@ -80,73 +85,10 @@ public class CommentOptionsOperationTest {
         .put("allow_curation_rewards", true) // default value
         .put("extensions", Collections.emptyList())
         .build();
+    Map<String, Object> expectedAppbass
+        = ImmutableMap.of("type", "comment_options", "value", expectedMap);
 
-    assertThat(actual).containsExactly("comment_options", expectedMap);
-  }
-
-  @Test
-  public void toAppbase() {
-    // set up
-    String author = RandomStringUtils.randomAlphanumeric(8);
-    String permlink = RandomStringUtils.randomAlphanumeric(8);
-    SteemAsset maxExpectedPayout = OperationTestUtils.randomSteemAsset();
-    SteemPercent percentSteemDollers
-        = SteemPercent.of(RandomUtils.nextInt(0, 100), RandomUtils.nextInt(0, 100));
-    boolean allowVotes = RandomUtils.nextBoolean();
-    boolean allowCurationRewards = RandomUtils.nextBoolean();
-    Set<CommentOptionsExtension> extensions
-        = ImmutableSet.of(CommentOptionsExtension.ALLOWED_VOTE_ASSETS,
-        CommentOptionsExtension.COMMENT_PAYOUT_BENEFICIARIES);
-
-    CommentOptionsOperation.Value value = CommentOptionsOperation.Value.builder()
-        .author(author)
-        .permlink(permlink)
-        .maxExpectedPayout(maxExpectedPayout)
-        .percentSteemDollers(percentSteemDollers)
-        .allowVotes(allowVotes)
-        .allowCurationRewards(allowCurationRewards)
-        .extensions(extensions)
-        .build();
-    CommentOptionsOperation sut = CommentOptionsOperation.of(value);
-
-    // exercise
-    Map<String, Object> actual = sut.toAppbase();
-
-    // verify
-    List<String> expectedExtensions = ImmutableList.of(
-        CommentOptionsExtension.ALLOWED_VOTE_ASSETS.toProtocol(),
-        CommentOptionsExtension.COMMENT_PAYOUT_BENEFICIARIES.toProtocol());
-    Map<String, Object> expectedMap = ImmutableMap.<String, Object>builder()
-        .put("author", author)
-        .put("permlink", permlink)
-        .put("max_expected_payout", ObjectMapUtils.toObjectMap(maxExpectedPayout))
-        .put("percent_steem_dollers", percentSteemDollers.toProtocolValue())
-        .put("allow_votes", allowVotes)
-        .put("allow_curation_rewards", allowCurationRewards)
-        .put("extensions", expectedExtensions)
-        .build();
-    Map<String, Object> expected = ImmutableMap.of("type", "comment_options", "value", expectedMap);
-
-    assertThat(actual).isEqualTo(expected);
-  }
-
-  @Test
-  public void toAppbase_empty() {
-    // set up
-    CommentOptionsOperation sut
-        = CommentOptionsOperation.of(CommentOptionsOperation.Value.builder().build());
-
-    // exercise
-    Map<String, Object> actual = sut.toAppbase();
-
-    // verify
-    Map<String, Object> expectedMap = ImmutableMap.<String, Object>builder()
-        .put("allow_votes", true) // default value
-        .put("allow_curation_rewards", true) // default value
-        .put("extensions", Collections.emptyList())
-        .build();
-    Map<String, Object> expected = ImmutableMap.of("type", "comment_options", "value", expectedMap);
-
-    assertThat(actual).isEqualTo(expected);
+    assertThat(actualCondenser).containsExactly("comment_options", expectedMap);
+    assertThat(actualAppbase).isEqualTo(expectedAppbass);
   }
 }
