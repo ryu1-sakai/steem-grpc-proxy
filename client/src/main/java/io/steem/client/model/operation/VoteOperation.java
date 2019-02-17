@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import io.steem.client.model.SteemOperation;
+import io.steem.client.model.SteemPercent;
 import io.steem.client.model.util.ObjectMapUtils;
 import lombok.Builder;
 
@@ -19,7 +20,7 @@ public class VoteOperation extends SteemOperation {
     private final String voter;
     private final String author;
     private final String permlink;
-    private final short weight;
+    private final SteemPercent weight;
   }
 
   private final Value value;

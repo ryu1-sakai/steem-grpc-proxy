@@ -43,4 +43,9 @@ public final class OperationTestUtils {
         RandomUtils.nextInt(0, 100));
     return new SteemChainProperties(accountCreationFee, maximumBlockSize, sbdInterestRate);
   }
+
+  public static SteemPercent randomSteemPercent() {
+    int protocolValue = RandomUtils.nextInt(0, SteemPercent.MAX_PROTOCOL_VALUE + 1);
+    return SteemPercent.of(protocolValue / 100, protocolValue % 100);
+  }
 }

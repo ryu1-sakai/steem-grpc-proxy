@@ -1,8 +1,9 @@
 package io.steem.client.model.operation;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
+import io.steem.client.model.SteemPercent;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.RandomUtils;
 import org.junit.Test;
 
 import java.util.List;
@@ -12,13 +13,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class VoteOperationTest {
 
+  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
   @Test
   public void toCondenserAndAppbase() {
     // set up
     String voter = RandomStringUtils.randomAlphanumeric(8);
     String author = RandomStringUtils.randomAlphanumeric(8);
     String permlink = RandomStringUtils.randomAlphanumeric(8);
-    short weight = (short) RandomUtils.nextInt(0, Short.MAX_VALUE + 1);
+    SteemPercent weight = OperationTestUtils.randomSteemPercent();
 
     VoteOperation.Value value = VoteOperation.Value.builder()
         .voter(voter)
@@ -37,7 +40,7 @@ public class VoteOperationTest {
         .put("voter", voter)
         .put("author", author)
         .put("permlink", permlink)
-        .put("weight", weight)
+        .put("weight", OBJECT_MAPPER.convertValue(weight, Integer.class))
         .build();
     Map<String, Object> expectedAppbase = ImmutableMap.of("type", "vote", "value", expectedMap);
 
