@@ -1,5 +1,5 @@
 package io.steem.client.model.operation;
 
-public class LimitOderCreate2Operation {
+public class LimitOrderCancelOperation {
   //FIXME: Implement the class
 }
