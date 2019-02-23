@@ -6,5 +6,5 @@ import lombok.Value;
 public class SteemAsset {
   private long amount;
   private int precision;
-  private String nai;
+  private SteemNai nai;
 }

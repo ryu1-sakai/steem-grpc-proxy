@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableSortedMap;
 import io.steem.client.model.SteemAsset;
 import io.steem.client.model.SteemAuthority;
 import io.steem.client.model.SteemChainProperties;
+import io.steem.client.model.SteemNai;
 import io.steem.client.model.SteemPercent;
 import io.steem.client.model.SteemTime;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -18,7 +19,7 @@ public final class OperationTestUtils {
 
   public static SteemAsset randomSteemAsset() {
     return new SteemAsset(RandomUtils.nextLong(), RandomUtils.nextInt(),
-        RandomStringUtils.randomAlphabetic(8));
+        randomEnum(SteemNai.class));
   }
 
   public static SteemAuthority randomSteemAuthority() {
@@ -47,5 +48,10 @@ public final class OperationTestUtils {
   public static SteemPercent randomSteemPercent() {
     int protocolValue = RandomUtils.nextInt(0, SteemPercent.MAX_PROTOCOL_VALUE + 1);
     return SteemPercent.of(protocolValue / 100, protocolValue % 100);
+  }
+
+  private static <E> E randomEnum(Class<E> enumClass) {
+    E[] enumValues = enumClass.getEnumConstants();
+    return enumValues[RandomUtils.nextInt(0, enumValues.length)];
   }
 }
