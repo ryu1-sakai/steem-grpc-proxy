@@ -1,5 +1,6 @@
 package io.steem.client.model;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -12,21 +13,11 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
-@JsonSerialize(using = SteemTime.Serializer.class)
 @Value(staticConstructor = "of")
 public class SteemTime {
 
   // DateTimeFormatter isn't compatible with SteemTime when the year is larger tha 9999
   public static final Instant MAX_INSTANT = Instant.parse("+10000-01-01T00:00:00Z").minusSeconds(1);
-
-  public static class Serializer extends JsonSerializer<SteemTime> {
-
-    @Override
-    public void serialize(SteemTime value, JsonGenerator gen, SerializerProvider serializers)
-        throws IOException {
-      gen.writeString(value.serialize());
-    }
-  }
 
   private static final DateTimeFormatter FORMATTER
       = DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss");
@@ -39,6 +30,7 @@ public class SteemTime {
     return new SteemTime(instant);
   }
 
+  @JsonValue
   private String serialize() {
     return FORMATTER.format(instant.atOffset(ZoneOffset.UTC));
   }
