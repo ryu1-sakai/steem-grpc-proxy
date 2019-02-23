@@ -19,11 +19,13 @@ public class TransferToVestingOperationTest {
     String from = RandomStringUtils.randomAlphanumeric(8);
     String to = RandomStringUtils.randomAlphanumeric(8);
     SteemAsset amount = OperationTestUtils.randomSteemAsset();
+    String memo = RandomStringUtils.randomAlphanumeric(32);
 
     TransferToVestingOperation.Value value = TransferToVestingOperation.Value.builder()
         .from(from)
         .to(to)
         .amount(amount)
+        .memo(memo)
         .build();
     TransferToVestingOperation sut = TransferToVestingOperation.of(value);
 
@@ -36,6 +38,7 @@ public class TransferToVestingOperationTest {
         .put("from", from)
         .put("to", to)
         .put("amount", ObjectMapUtils.toObjectMap(amount))
+        .put("memo", memo)
         .build();
     Map<String, Object> expectedAppbase
         = ImmutableMap.of("type", "transfer_to_vesting", "value", expectedMap);

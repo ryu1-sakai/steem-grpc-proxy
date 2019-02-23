@@ -20,6 +20,7 @@ public class TransferToVestingOperation extends SteemOperation {
     private final String from;
     private final String to;
     private final SteemAsset amount;
+    private final String memo;
   }
 
   private final Value value;
