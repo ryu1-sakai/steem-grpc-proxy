@@ -8,13 +8,13 @@ import lombok.Value;
 @Builder
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 @Value
-public class WitnessProperties {
+public class SteemProperties {
 
-  private final SteemCurrencySteem accountCreationFee;
-  private final int accountSubsidyBudget;
+  private final SteemCurrency accountCreationFee;
+  private final long accountSubsidyBudget;
   private final long accountSubsidyDecay;
-  private final int maxBlockSize;
-  private final SteemCurrencySteem sbdInterestRate;
+  private final int maximumBlockSize;
+  private final SteemCurrency sbdInterestRate;
   private final SbdExchangeRate sbdExchangeRate;
   private final String url;
   private final String newSigningKey;
