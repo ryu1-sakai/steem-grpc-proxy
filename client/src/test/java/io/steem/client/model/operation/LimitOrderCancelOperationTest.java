@@ -25,7 +25,6 @@ public class LimitOrderCancelOperationTest {
     LimitOrderCancelOperation sut = LimitOrderCancelOperation.of(value);
 
     // exercise
-    // exercise
     List<Object> actualCondenser = sut.toCondenser();
     Map<String, Object> actualAppbase = sut.toAppbase();
 
