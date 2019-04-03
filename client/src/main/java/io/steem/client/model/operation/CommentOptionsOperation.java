@@ -12,8 +12,8 @@ import lombok.Builder;
 import lombok.ToString;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @ToString
 public class CommentOptionsOperation extends SteemOperation {
@@ -29,12 +29,12 @@ public class CommentOptionsOperation extends SteemOperation {
     private final SteemPercent percentSteemDollers;
     private final boolean allowVotes;
     private final boolean allowCurationRewards;
-    private final Set<CommentOptionsExtension> extensions;
+    private final List<CommentOptionsExtension> extensions;
 
     public static class ValueBuilder {
       private boolean allowVotes = true; // default is true
       private boolean allowCurationRewards = true; // default is true
-      private Set<CommentOptionsExtension> extensions = Collections.emptySet();
+      private List<CommentOptionsExtension> extensions = Collections.emptyList();
     }
   }
 

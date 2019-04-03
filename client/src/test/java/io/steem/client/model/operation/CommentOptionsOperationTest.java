@@ -2,10 +2,11 @@ package io.steem.client.model.operation;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
+import io.steem.client.model.CommentBeneficiary;
 import io.steem.client.model.CommentOptionsExtension;
 import io.steem.client.model.SteemAsset;
 import io.steem.client.model.SteemPercent;
+import io.steem.client.model.VotableAssetInfoV1;
 import io.steem.client.model.util.ObjectMapUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
@@ -14,7 +15,6 @@ import org.junit.Test;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -30,9 +30,14 @@ public class CommentOptionsOperationTest {
         = SteemPercent.of(RandomUtils.nextInt(0, 100), RandomUtils.nextInt(0, 100));
     boolean allowVotes = RandomUtils.nextBoolean();
     boolean allowCurationRewards = RandomUtils.nextBoolean();
-    Set<CommentOptionsExtension> extensions
-        = ImmutableSet.of(CommentOptionsExtension.ALLOWED_VOTE_ASSETS,
-        CommentOptionsExtension.COMMENT_PAYOUT_BENEFICIARIES);
+    List<CommentBeneficiary> beneficiaries
+        = ImmutableList.of(CommentBeneficiary.of(RandomStringUtils.randomAlphanumeric(8),
+            OperationTestUtils.randomSteemPercent()));
+    Map<String, VotableAssetInfoV1> votableAssets = ImmutableMap.of(
+        "STEEM", VotableAssetInfoV1.of(RandomUtils.nextLong(), RandomUtils.nextBoolean()));
+    List<CommentOptionsExtension> extensions
+        = ImmutableList.of(CommentOptionsExtension.beneficiaries(beneficiaries),
+        CommentOptionsExtension.allowedVoteAssets(votableAssets));
 
     CommentOptionsOperation.Value value = CommentOptionsOperation.Value.builder()
         .author(author)
@@ -50,9 +55,7 @@ public class CommentOptionsOperationTest {
     Map<String, Object> actualAppbase = sut.toAppbase();
 
     // verify
-    List<String> expectedExtensions = ImmutableList.of(
-        CommentOptionsExtension.ALLOWED_VOTE_ASSETS.toProtocol(),
-        CommentOptionsExtension.COMMENT_PAYOUT_BENEFICIARIES.toProtocol());
+    @SuppressWarnings("UnstableApiUsage")
     Map<String, Object> expectedMap = ImmutableMap.<String, Object>builder()
         .put("author", author)
         .put("permlink", permlink)
@@ -60,7 +63,7 @@ public class CommentOptionsOperationTest {
         .put("percent_steem_dollers", percentSteemDollers.toProtocolValue())
         .put("allow_votes", allowVotes)
         .put("allow_curation_rewards", allowCurationRewards)
-        .put("extensions", expectedExtensions)
+        .put("extensions", ObjectMapUtils.toObjectMapList(extensions))
         .build();
     Map<String, Object> expectedAppbase
         = ImmutableMap.of("type", "comment_options", "value", expectedMap);
