@@ -63,7 +63,7 @@ public class CommentOptionsOperationTest {
         .put("percent_steem_dollers", percentSteemDollers.toProtocolValue())
         .put("allow_votes", allowVotes)
         .put("allow_curation_rewards", allowCurationRewards)
-        .put("extensions", ObjectMapUtils.toObjectMapList(extensions))
+        .put("extensions", ObjectMapUtils.toObjectMap(extensions))
         .build();
     Map<String, Object> expectedAppbase
         = ImmutableMap.of("type", "comment_options", "value", expectedMap);

@@ -12,11 +12,7 @@ public final class ObjectMapUtils {
 
   private ObjectMapUtils() {}
 
-  public static <T> Map<String, Object> toObjectMap(T value) {
-    return OBJECT_MAPPER.convertValue(value, new TypeReference<Map<String, Object>>() {});
-  }
-
-  public static <T> List<Object> toObjectMapList(List<T> value) {
-    return OBJECT_MAPPER.convertValue(value, new TypeReference<List<Object>>() {});
+  public static <T, U> U toObjectMap(T value) {
+    return OBJECT_MAPPER.convertValue(value, new TypeReference<U>() {});
   }
 }

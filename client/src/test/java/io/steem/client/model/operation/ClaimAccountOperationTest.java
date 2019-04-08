@@ -35,7 +35,7 @@ public class ClaimAccountOperationTest {
 
     // verify
     @SuppressWarnings("UnstableApiUsage")
-    List<Map<String, Object>> extensionMaps = extensions.stream()
+    List<?> extensionMaps = extensions.stream()
         .map(ObjectMapUtils::toObjectMap)
         .collect(ImmutableList.toImmutableList());
     Map<String, Object> expectedMap = ImmutableMap.<String, Object>builder()
